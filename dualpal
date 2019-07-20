@@ -1,0 +1,544 @@
+
+// REMOVE BEFORE SUBMITTING
+package main;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+/*
+ID: omnimed1
+LANG: JAVA
+TASK: dualpal
+*/
+
+
+
+
+
+public class dualpal {
+	
+	/*
+	 *  VALUES 2 AND UP IN TERMS OF ROWS up until 
+	 * [ 2, 4, 8, 16, 32, 64, 128, 256, ]
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	// make a test array with 32 spots.. 
+	// this represents the places in base 2
+	public static int[] base2 = new int[32];
+	
+	public static int[][] bases = new int[9][32];
+
+
+
+	public static void main(String[] args) throws IOException {
+		
+		long startTime = System.nanoTime();
+
+		BufferedReader f = new BufferedReader(new FileReader(System.getProperty("user.dir") + "//dualpal.in"));
+		
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("dualpal.out")));
+	
+		
+		StringTokenizer items = new StringTokenizer(f.readLine());
+			
+		
+		popBases();
+		display2DArray(bases);
+		
+
+		
+		//displayArray(base2);
+		
+		findHBv2(1000, 3);
+		
+
+		// TEST with 10 
+		
+		int total  = Integer.parseInt(items.nextToken());
+		
+		int start = Integer.parseInt(items.nextToken());
+		
+		boolean debug = false; 
+		
+
+		
+		
+		if ( debug ) System.out.println("The total number of items to check is: " + total);
+		if ( debug ) System.out.println("The First number of to check after is: " + start);
+
+		//System.out.println("\n FUN value is---> : " + fun);
+		
+		int qualify = 0; 
+		
+		int count = 0; 
+		
+		while ( count < total) {
+		
+			start++;
+			
+			if ( debug ) System.out.println("We are now analyizing the base 10 number of : -> " + start);
+			
+			qualify = 0; 
+			
+			
+			for (int radix = 2; radix <= 10; radix++) {
+				
+				ArrayList<Integer> convert = fromBase10BaseNArr( "" + start, radix);
+				
+				if ( debug ) System.out.println("We are in the base of " + radix );
+				if ( debug ) System.out.println("The converted number of " + start + " is " + convert);
+				 
+				
+				if ( isPalindromic(convert)) qualify++;
+				
+				if ( qualify >= 2) {
+					
+					if ( debug) System.out.println("The number " + start + " qualifies..." );
+					
+					String addLine = "" + start;
+					out.println(addLine);
+					count++;
+					break;
+				}
+			}
+				
+		}
+		
+		
+		
+		out.close();
+		
+
+		long endTime = System.nanoTime();
+		
+		//System.out.println("\n\nThe time used in milliseconds was: " + (endTime - startTime) / 1000000);
+	
+		//BufferedReader f = new BufferedReader(new FileReader("dualpal.in"));
+
+	// end of the main driver method... 
+	}
+	
+	public static boolean isPalindromic( int n ) {
+		
+		String s = Integer.toString(n);
+		
+		return ( s.equals( reverseString_01B(s)));
+		
+	}
+	
+	
+	public static boolean isPalindromic( String s ) {
+		
+		
+		
+		return ( s.equals( reverseString_01B(s)));
+		
+	}
+	
+	public static boolean isPalindromic( ArrayList<Integer> s ) {
+		
+		
+	     for (int i = 0; i < s.size() / 2; i++){
+	            
+	            int orig = s.get(i);
+	            int swap = s.get(s.size() - 1 - i);
+	            
+	            if ( orig != swap   ) return false; 
+	  
+		      } 
+		
+		return true;
+			
+	}
+	
+	// this is a more raw version where I'm converting the String into a char array manually and then
+	// putting the char array into a new String directly... it has significant performance benefit over concatentation 
+	public static String reverseString_01B(String input){
+		
+		
+		char [] s = input.toCharArray();
+		
+	     for (int i = 0; i < s.length / 2; i++){
+	            
+	            char orig = s[i];
+	            char swap = s[s.length - 1- i];
+
+	            s[i] = swap;
+	            s[s.length - 1 - i] = orig;
+	  
+		      } 
+		
+		return new String(s);
+	}
+	
+	
+
+	
+	public static ArrayList<Integer> fromBase10BaseNArr( String s, int radix) {
+		
+		
+		
+		// given an integer "n" in base 2  ...
+		// return a new integer that is in the base of "b" ... without leading zeroes... 
+		
+		// 10 in base 2 --
+		// 1010 
+		
+		// 10 in base 3 
+		// 021
+		
+		// 10 in base 3
+		
+		// TODO -> 
+		
+		boolean debug = false; 
+		
+		// make an integer representing a base 2 version of a string which represents a base 2 number
+		
+		ArrayList<Integer> b2 = new ArrayList<Integer>();
+		
+		
+		int b10 = Integer.parseInt(s);
+		
+
+		if ( debug ) System.out.println("The current value of b10 is: " + b10 );
+		if ( debug ) System.out.println("The base (radix)  is: " + radix );
+		
+		int[] place_control = findHBv2(b10, radix);
+		
+		if ( debug ) System.out.println("\nTHE TEST first current place of : " + b10 + " is: " + place_control[0]);
+		if ( debug ) System.out.println("\nTHE value of the first current place of : " + b10 + " is: " + place_control[1]);
+		
+		int currentPlace = place_control[0];
+		
+		
+		
+		while ( b10 >= 0 ) {
+			
+			if ( debug ) {
+				System.out.println("\nThe current value of b10 is: " + b10 );
+				System.out.println("The current place is: " + currentPlace );
+			}
+			
+			
+			if ( currentPlace  <= 1) {
+				
+				if ( debug ) {
+					
+					System.out.println("\n\nWARNING -----> Break area...");
+					System.out.println("The value of b10 is: " + b10);
+				}
+				
+				b2.add(b10);
+			
+				
+				break;
+			}
+			
+			
+			
+			if ( currentPlace <= b10 )  {
+				
+				int safe = 1; 
+				
+				for (int mult = 2; mult < radix; mult++ ) {
+					
+					if ( mult * currentPlace < b10 ) safe = mult; 
+					
+				}
+				
+				if ( debug ) System.out.println("ADDING  A " + safe + " to the end of the list.... ");
+				
+				
+				b2.add(safe);
+				
+				b10 -= safe * currentPlace; 
+				
+				
+				
+				
+			} else {
+				
+				if ( debug ) System.out.println("ADDING  A 0 to the end of the list.... ");
+				
+				b2.add(0);
+			}
+			currentPlace /= radix; 
+		}
+		
+		
+	 
+		if ( debug) System.out.println("The current value of b2 is now.... " + b2 );
+	
+		//char [] word = new char [ b2.size()];
+		
+
+		
+		// todo 
+		return b2;
+		
+		
+
+		
+	// end of the the stringIntToBinary function 	
+	}
+	
+	public static int [] findHBv2(int n, int radix ) {
+		/*
+		 * The left number of the array is the highest PLACE of the number in the appropriate base 
+		 * The right number of the array is the value in that specific place 
+		 * 
+		 * THUS -> [9, 2]
+		 * MEANS -> in base 3 -> the 9's place has a value of 2 for the first number to the left... 
+		 */
+		
+
+		
+		int[] result = {0, 0}; 
+		
+		boolean debug = false;
+		
+		if (debug) System.out.println("\nThe Target value is: " + n);
+		if ( debug ) System.out.println("The base we're in is: " +radix +"\n ");
+		
+		int baseLock = 1;
+		
+		for (int i = 0; i < bases[radix - 2].length; i++) {
+			
+			int lookUp = bases[radix - 2][i ];
+			
+			if ( lookUp > 0 ) {
+				if ( debug ) System.out.println("The value of bases at i is: "  + lookUp);
+				
+				if ( lookUp < n) {
+					
+					if ( debug) System.out.println("The lookup of: " + lookUp + " is less than " + n );
+					
+					baseLock = lookUp;
+					if ( debug) System.out.println("The value of i is: " + i + " \n");
+					result[0] = baseLock;
+					result[1] = 1;
+				}
+				
+				
+			} else {
+				
+				if ( debug) System.out.println("This number of : " +lookUp + "  is larger.... than the target...");
+				break;
+			}	
+		}
+		
+		if ( debug ) System.out.println("\n Begin incrementing the baseLock by itself to check for the scale of the number...");
+			
+		
+		for ( int i = 0; i < 32; i++) {
+			
+			if ( baseLock + baseLock > n) {
+				if ( debug )System.out.println("baseLock of: " + (baseLock + baseLock) + " is greater than " + n);
+				break;
+			} else {
+				if ( debug )System.out.println("Incrementing " + baseLock + " by iteself...");
+				if ( debug )baseLock += baseLock;
+				
+				result[1]++;
+			}
+		}
+		
+		if ( debug) {
+			displayArray(result);
+		}
+		
+		return result; 
+		
+		
+	// end of the findHBv2 
+	}
+	
+	
+	public static int[]  findHighestBase(int n, int radix) {
+		
+		
+		/*
+		 * The left number of the array is the highest PLACE of the number in the appropriate base 
+		 * The right number of the array is the value in that specific place 
+		 * 
+		 * THUS -> [9, 2]
+		 * MEANS -> in base 3 -> the 9's place has a value of 2 for the first number to the left... 
+		 */
+		
+		int power = 0;
+		
+		
+		int[] result = {0, 0}; 
+		
+		boolean debug = false;
+		
+		
+		
+		for (int i = 1; i < n; i++  ) {
+			
+
+			
+			for (int scale = 1; scale < radix; scale++) {
+				
+				int testUnits = bases[radix - 2][power ];
+				
+				
+				int units = (int) Math.pow(radix, power);
+				
+				int temp = units * scale;
+				
+				if ( debug ) System.out.println("\n ****** The testUNITS is: : " + testUnits + " ********* \n");
+				if ( debug ) System.out.println("The radix is: " + radix);
+				if ( debug ) System.out.println("The scale is: " + scale);
+				if ( debug ) System.out.println("The units is: " + units);
+				if ( debug ) System.out.println("The TEMP is: " + temp);
+				
+				if ( temp < 0 || temp == 2147483647) {
+					
+					if ( debug ) System.out.println("EMERGENCY BREAK..... -> Exceeding 32 bit integer...");
+					i = n;
+					break;
+				}
+				
+				
+				
+				if ( temp <= n)  {
+					if ( debug ) System.out.println(" The number " + n + " is base " + radix + " potential digit...");
+					
+					result [0] = units;
+					result [1] = scale;
+				} else {
+					
+					if ( debug ) System.out.println("Bonkers temp?");
+					break;
+				}
+			}
+			
+			
+			
+			power++;
+		}
+		
+		return result; 
+		
+	// end of the findHighestBase method... 
+	}
+	
+	
+	public static void popBase2 () {
+		
+		for (int i = 0; i < base2.length; i++) {
+			
+			if(i == 0) {
+				base2[i] = 1;
+			} 
+			
+			else if(i == 1) {
+				base2[i] = 2;
+			} 
+			
+			
+			else {
+				
+				int val = base2[i - 1] * 2;
+				if ( val < 0) {
+					break;
+				} else {
+					base2[i] = val;
+				}
+				
+			}
+		}
+	// end of popBase2 	
+	}
+	
+	public static void popBases() {
+		
+		for (int i = 0; i < bases.length; i++) {
+			for (int j = 0; j < bases[0].length; j++) {
+				bases[i][j] = -1; 
+			}
+		}
+		
+		for (int base = 2; base <= 10; base++) {
+			
+			
+			for (int i = 0; i < bases[0].length; i++) {
+				
+				if(i == 0) {
+					bases[base - 2][i] = 1;
+				} 
+				
+				else if(i == 1) {
+					bases[base - 2][i] = base;
+					
+				} 
+				
+				 else {
+					
+					int val = bases[base - 2][i - 1] * base;
+					if ( val < 0 || val == 0) {
+						break;
+					} else {
+						bases[base - 2][i] = val;
+					}
+					
+				}
+			}
+			
+		// end of the base for loop 	
+		}
+	// end of popBases 	
+	}
+	
+	
+	 public static void display2DArray(int[][] arr) {
+
+		  for (int row = 0; row < arr.length; row ++ ){
+			  
+			  System.out.print("\n[ ");
+				
+				for (int i = 0; i < arr[0].length; i++) {
+					if (i == arr[0].length - 1) {
+						System.out.print(arr[row][i]);
+					} else {
+						System.out.print(arr[row][i] + ", ");
+					}
+				}
+				
+				System.out.print(" ]");
+		  }	
+	// end of the display2DArray method 
+	}
+	
+	public static void displayArray(int[] arr) {
+		
+
+		System.out.print("\n[ ");
+		
+		for (int i = 0; i < arr.length; i++) {
+			if (i == arr.length - 1) {
+				System.out.print(arr[i]);
+			} else {
+				System.out.print(arr[i] + ", ");
+			}
+		}
+		
+		System.out.print(" ]\n");
+	}
+	
+
+// end of the dualpal class 
+}
