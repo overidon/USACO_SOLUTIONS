@@ -1,0 +1,34 @@
+
+
+
+		/*
+		CHALLENGE 5  notes
+		int [][] system = fillSystem(roads);
+		
+		//displayRoadsInts(system);
+		
+		int L = system.length; 
+		
+		
+		for (int r = 0; r < L; r++) {
+			
+			int [] row = system[r];
+			
+			Arrays.sort(row);
+			
+			for (int i = 0; i < row.length - 1; i++) {
+				
+				int left = row[i];
+				int right = row[i + 1];
+				
+				if ( left == -1) continue; 
+				if ( right == -1) continue;
+				
+				if ( right - left == 1) return false; 
+						
+				
+			}
+			
+		}
+		
+		*/

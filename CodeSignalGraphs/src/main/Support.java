@@ -1,0 +1,40 @@
+package main;
+
+public class Support {
+	  public static void display2DArray(int[][] arr) {
+
+		  for (int row = 0; row < arr.length; row ++ ){
+			  
+			  System.out.print("\n[ ");
+				
+				for (int i = 0; i < arr[0].length; i++) {
+					if (i == arr[0].length - 1) {
+						System.out.print(arr[row][i]);
+					} else {
+						System.out.print(arr[row][i] + ", ");
+					}
+				}
+				
+				System.out.print(" ]");
+		  }	
+	  }
+
+
+	  public static void display2DArray(char[][] arr) {
+
+		  for (int row = 0; row < arr.length; row ++ ){
+			  
+			  System.out.print("\n[ ");
+				
+				for (int i = 0; i < arr[0].length; i++) {
+					if (i == arr[0].length - 1) {
+						System.out.print(arr[row][i]);
+					} else {
+						System.out.print(arr[row][i] + ", ");
+					}
+				}
+				
+				System.out.print(" ]");
+		  }	
+	  }
+}
